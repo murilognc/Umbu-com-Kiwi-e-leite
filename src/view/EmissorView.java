@@ -5,6 +5,13 @@
  */
 package view;
 
+import controller.Roteador;
+import controller.Emissor;
+import java.io.IOException;
+import java.net.SocketException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author muril
@@ -40,7 +47,6 @@ public class EmissorView extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(800, 600));
         setMinimumSize(new java.awt.Dimension(800, 600));
-        setPreferredSize(new java.awt.Dimension(800, 600));
 
         cmdRoteador.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -77,6 +83,11 @@ public class EmissorView extends javax.swing.JFrame {
         });
 
         btnExecutarPacote.setText("Executar");
+        btnExecutarPacote.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnExecutarPacoteMouseClicked(evt);
+            }
+        });
         btnExecutarPacote.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExecutarPacoteActionPerformed(evt);
@@ -98,15 +109,14 @@ public class EmissorView extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cmdRoteador)
                             .addComponent(txtLog)
                             .addComponent(cmdPacote)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel3))
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -167,12 +177,27 @@ public class EmissorView extends javax.swing.JFrame {
 
     private void btnExecutarRoteadorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExecutarRoteadorMouseClicked
         // TODO add your handling code here: CRIAR CÓDIGO PARA CRIAR UM ROTEADOR;
+        String comando = cmdRoteador.getText();
+        Roteador roteador = new Roteador(comando);
     }//GEN-LAST:event_btnExecutarRoteadorMouseClicked
+
+    private void btnExecutarPacoteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExecutarPacoteMouseClicked
+        // TODO add your handling code here:
+        String comando = cmdPacote.getText();
+        try {
+            Emissor emissor = new Emissor(comando);
+        } catch (SocketException ex) {
+            Logger.getLogger(EmissorView.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(EmissorView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }//GEN-LAST:event_btnExecutarPacoteMouseClicked
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]){
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.

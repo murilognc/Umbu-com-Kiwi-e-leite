@@ -42,20 +42,20 @@ public class Roteador {
 		byte[] mensagemTransformada = new byte[256];
 		DatagramPacket pacote = new DatagramPacket(mensagemTransformada, mensagemTransformada.length);
 		
-		try {
+        try {
             socketReceptor = new DatagramSocket(portaExecucao);
         } catch (SocketException ex) {
 
             Logger.getLogger(Roteador.class.getName()).log(Level.SEVERE, null, ex);
         }
 		
-		try {
+        try {
             socketReceptor.receive(pacote);
         } catch (IOException ex) {
             socketReceptor.close();
             Logger.getLogger(Roteador.class.getName()).log(Level.SEVERE, null, ex);
         }
-		String[] informacoesMensagem = lerPacote(pacote);
+        String[] informacoesMensagem = lerPacote(pacote);
         String ipDestinoFinal = informacoesMensagem[0];
         String ipProxRoteador;
         String ipOrigem = informacoesMensagem[2];
