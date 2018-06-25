@@ -19,6 +19,8 @@ public class Roteador {
 	private byte[] msg;
 	private DatagramSocket socketReceptor = null;
 	private TabelaRoteamento tabela;
+        int ttl = 5;
+        String log = "";
 	public Roteador(String comando) {
 		String[] partes = comando.split(" ");
 		portaExecucao = Integer.parseInt(partes[0]);
@@ -60,23 +62,36 @@ public class Roteador {
         String ipProxRoteador;
         String ipOrigem = informacoesMensagem[2];
         String mensagem = informacoesMensagem[3];
+        if(informacoesMensagem[4] != null){
+        ttl = Integer.valueOf(informacoesMensagem[4]);
+        ttl--;
+        }
         ProximoSalto proximoRoteador = tabela.verificarIP(informacoesMensagem[0]);
+        if(ttl > 0){
         if (proximoRoteador == null) {
             Mensagem.destinoInexistente(ipDestinoFinal);
+            log += "destination" + ipDestinoFinal + " not found in routing table, dropping packet \n";
         } else if (proximoRoteador.getIpProxRoteador().equals("0.0.0.0")) {
             Mensagem.encaminharDiretamente(informacoesMensagem);
+            log += "destination " + informacoesMensagem + " not found in routing table, dropping packet \n" ;
         } else {
             ipProxRoteador = proximoRoteador.getIpProxRoteador();
             int portaProxRoteador = proximoRoteador.getPortaProxRoteador();
-            mensagem = ipDestinoFinal + " " + ipProxRoteador + " " + ipOrigem + " " + mensagem;
+            mensagem = ipDestinoFinal + " " + ipProxRoteador + " " + ipOrigem + " " + mensagem + ttl;
             enviarPacote(mensagem, ipProxRoteador, portaProxRoteador);
             Mensagem.encaminharPacote(ipDestinoFinal, ipProxRoteador, portaProxRoteador);
+            log += "destination reached. From " + ipOrigem + " to " +
+                ipDestinoFinal + " : " + mensagem + "\n";
+        }
+        }else{
+            Mensagem.ttlExpirado(ipDestinoFinal);
+            log += "Time to Live exceeded in Transit, dropping packet for: " + ipDestinoFinal + "\n";
         }
         socketReceptor.close();    
 	}
 	
 	private void enviarPacote(String mensagem, String ipRoteador, int portaProxRoteador) {
-		InetAddress enderecoRoteador = null;
+        InetAddress enderecoRoteador = null;
         byte[] mensagemByteficada;
         DatagramPacket pacote;
         DatagramSocket socketEnviador = null;

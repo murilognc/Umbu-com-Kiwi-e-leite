@@ -5,6 +5,7 @@ public class Mensagem {
 
         System.out.println("forwarding packet for " + ipFinal + " to next hop "
                 + roteadorDestino + " over interface " + portaDestino);
+        
 
     }
     
@@ -19,5 +20,9 @@ public class Mensagem {
         
         System.out.println("destination reached. From " + ipOrigem + " to " +
                 ipDestino + " : " + mensagem);
+    }
+    
+    public static void ttlExpirado(String ipFinal){
+        System.out.println("Time to Live exceeded in Transit, dropping packet for: " + ipFinal);
     }
 }

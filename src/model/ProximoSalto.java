@@ -4,6 +4,7 @@ public class ProximoSalto {
 
 	private String ipProxRoteador;
 	private int portaProxRoteador;
+        private int ttl = 5;
 	
 	public ProximoSalto(String ipProxRoteador, int portaProxRoteador) {
 		this.ipProxRoteador = ipProxRoteador;
@@ -17,5 +18,13 @@ public class ProximoSalto {
 	public int getPortaProxRoteador() {
         return portaProxRoteador;
 	}
+        
+        public int getTtl(){
+            return ttl;
+        }
+        
+        public void setTtl(int ttl){
+            this.ttl = ttl;
+        }
 	
 }
